@@ -10,12 +10,12 @@ jobs:
       - uses: actions/checkout@v3
       
       - name: Gets file(s) from PR
-        run: |
+      - run: |
           git fetch origin ${{github.event.pull_request.base.ref}}:refs/remotes/origin/base
           git diff --name-only --diff-filter=d $(git merge-base HEAD origin/base)..HEAD > changed_files.txt
         
       - name: Set file path
-        run: |
+      - run: |
           CHANGED_FILES=$(cat changed_files.txt)
           echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
      
