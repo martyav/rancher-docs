@@ -13,3 +13,5 @@ Hello world! This is a test of the Github Action I just added.
 1. c
 
 # Another heading
+
+Another sentence is here.
