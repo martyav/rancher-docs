@@ -6,7 +6,21 @@ jobs:
     name: Vale style check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Check out file(s)
+      - uses: actions/checkout@v3
+      - run: |
+          git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/base
+          git diff --name-only --diff-filter=d $(git merge-base HEAD origin/base)..HEAD > changed_files.txt
+        
+      - name: Set file path
+        run: |
+          CHANGED_FILES=$(cat changed_files.txt)
+          echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
+     
+      - name: Lint files 
       - uses: errata-ai/vale-action@reviewdog
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          files: ${{env.CHANGED_FILES}}
+        
