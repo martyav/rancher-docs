@@ -11,10 +11,14 @@ jobs:
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/base
           git diff --name-only --diff-filter=d $(git merge-base HEAD origin/base)..HEAD > changed_files_in_PR.txt
+      - name: Set variables
+        run: |
+          CHANGED_FILES=$(cat changed_files_in_PR.txt)
+          echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
       - uses: errata-ai/vale-action@reviewdog
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
-          files: $(cat changed_files_in_PR.txt)
+          files: ${{env.CHANGED_FILES}}
           reporter: github-check
           fail_on_error: true
