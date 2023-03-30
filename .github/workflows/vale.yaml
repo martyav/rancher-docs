@@ -1,28 +1,20 @@
-name: Style check
+name: reviewdog
 on: [pull_request]
 
 jobs:
-  vale:
-    name: Vale style check
+  vale-lint:
+    name: runner / vale
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repo
       - uses: actions/checkout@v3
-      
-      - name: Gets file(s) from PR
-      - run: |
-          git fetch origin ${{github.event.pull_request.base.ref}}:refs/remotes/origin/base
-          git diff --name-only --diff-filter=d $(git merge-base HEAD origin/base)..HEAD > changed_files.txt
-        
-      - name: Set file path
-      - run: |
-          CHANGED_FILES=$(cat changed_files.txt)
-          echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
-     
-      - name: Lint files 
+      - name: Get changed files
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/base
+          git diff --name-only --diff-filter=d $(git merge-base HEAD origin/base)..HEAD > changed_files_in_PR.txt
       - uses: errata-ai/vale-action@reviewdog
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
-          files: ${{env.CHANGED_FILES}}
-        
+          files: $(cat changed_files_in_PR.txt)
+          reporter: github-check
+          fail_on_error: true
