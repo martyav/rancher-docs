@@ -6,8 +6,10 @@ jobs:
     name: Vale style check
     runs-on: ubuntu-latest
     steps:
-      - name: Check out file(s)
+      - name: Check out repo
       - uses: actions/checkout@v3
+      
+      - name: Gets file(s) from PR
         run: |
           git fetch origin ${{github.event.pull_request.base.ref}}:refs/remotes/origin/base
           git diff --name-only --diff-filter=d $(git merge-base HEAD origin/base)..HEAD > changed_files.txt
