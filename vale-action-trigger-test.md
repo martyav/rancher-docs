@@ -11,3 +11,5 @@ Hello world! This is a test of the Github Action I just added.
 1. a
 1. b
 1. c
+
+# Another heading
