@@ -1,77 +1,43 @@
-# Edit The Docs
-
-To get started, fork and clone the rancher-docs repository.
-
-Our repository doesn't allow you to make changes directly to the `main` branch. Create a working branch and make pull requests from your fork to [rancher/rancher-docs](https://github.com/rancher/rancher-docs). 
-
-## Style & Formatting
-
-The docs are written in [Markdown](https://www.markdownguide.org/getting-started/). We refer to the Microsoft [style guide](https://learn.microsoft.com/en-us/style-guide/welcome/) and generally use standard American English. Many pages are also available in Simplified Chinese.
-
-Every docs page contain metadata in the first few lines:
-
-```
 ---
-title: Some Title
+title: Feature Flags
 ---
-```
 
-The `title` is rendered as the page's headline. The site renderer wraps the `title` value in `H1` tags, which are equivalent to `#` in Markdown syntax. This means that all subsequent headers on the page should be second level (`##`) or more.
+Feature flags were introduced to allow you to try experimental features that are not enabled by default.
 
-## Docs Website
+To learn about feature values and how to enable features, refer [here](../../../pages-for-subheaders/enable-experimental-features.md).
 
-The Rancher Docs website is built with [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+:::note
 
-You can run the site on your local machine, to preview how pages on your working branch will look live.
+There are some feature flags that may require a restart of the Rancher server container. These features that require a restart are marked in the table of these docs and in the UI.
 
-First, install Docusaurus 2:
+:::
 
-1. If you haven't already, install [Node](https://nodejs.org/en/download/) and [Yarn](https://yarnpkg.com/getting-started/install).
-1. Go into your local rancher-docs folder.
-1. The Rancher Docs repository already contains a yarn.lock file, which contains the dependencies you need to build the website. Run `yarn` to install Docusaurus and associated dependencies.
+The following is a list of the feature flags available in Rancher:
 
-### Start Site
+- `harvester`: This feature flag is available starting in v2.6.1. It is used to manage access to the Virtualization Management page where users can navigate directly to Harvester clusters and access the Harvester UI. For more information, see [this page](../../../integrations-in-rancher/harvester.md#feature-flag/).
+- `rke2`: Used to enable the ability to provision RKE2 clusters. By default, this feature flag is enabled, which allows users to attempt to provision these type of clusters.
+- `fleet`: The previous `fleet` feature flag is now required to be enabled as the Fleet capabilities are leveraged within the new provisioning framework. If you had this feature flag disabled in earlier versions, upon upgrading to Rancher v2.6, the flag will automatically be enabled. See this [page](../../../how-to-guides/new-user-guides/deploy-apps-across-clusters/fleet.md) for more information.
+- `continuous-delivery`: In Rancher v2.5.x, Fleet came with a GitOps feature that could not be disabled separately from Fleet. In Rancher v2.6, the `continuous-delivery` feature flag was introduced to allow the GitOps feature of Fleet to be disabled. For more information, see [this page.](../../../how-to-guides/advanced-user-guides/enable-experimental-features/continuous-delivery.md)
+- `legacy`: There are a set of features from previous versions that are slowly being phased out of Rancher for newer iterations of the feature. This is a mix of deprecated features as well as features that will eventually be moved to newer variations in Rancher. By default, this feature flag is disabled for new installations. If you are upgrading from a previous version, this feature flag would be enabled.
+- `token-hashing`: Used to enable new token-hashing feature. Once enabled, existing tokens will be hashed and all new tokens will be hashed automatically using the SHA256 algorithm. Once a token is hashed it cannot be undone. Once this feature flag is enabled, it cannot be disabled. See [hashing of tokens](../../../reference-guides/about-the-api/api-tokens.md) for more information.
+- `unsupported-storage-drivers`: This feature [allows unsupported storage drivers.](../../../how-to-guides/advanced-user-guides/enable-experimental-features/unsupported-storage-drivers.md). In other words, it enables types for storage providers and provisioners that are not enabled by default.
+- `istio-virtual-service-ui`: This feature enables a [UI to create, read, update, and delete Istio virtual services and destination rules,](../../../how-to-guides/advanced-user-guides/enable-experimental-features/istio-traffic-management-features.md) which are traffic management features of Istio.
+- `multi-cluster-management`: Used for multi-cluster provisioning and management of Kubernetes clusters. This feature flag can only be set at install time and not changed afterwards.
 
-```
-yarn start
-```
+The below table shows the availability and default value for feature flags in Rancher:
 
-This command starts a local development server for Docusaurus 2, and opens up a browser window. Most changes are reflected live without having to restart the server.
+| Feature Flag Name             | Default Value | Status       | Available as of | Rancher Restart Required? |
+| ----------------------------- | ------------- | ------------ | --------------- |---|
+| `istio-virtual-service-ui`    | `false`       | Experimental | v2.3.0          | |
+| `istio-virtual-service-ui`    | `true`        | GA*           | v2.3.2          | |
+| `unsupported-storage-drivers` | `false`       | Experimental | v2.3.0          | |
+| `fleet`  | `true` | GA* | v2.5.0 |   |
+| `fleet`  | `true` | Can no longer be disabled | v2.6.0 | N/A  |
+| `continuous-delivery` | `true` | GA* | v2.6.0 | |
+| `token-hashing` | `false` for new installs, `true` for upgrades | GA* | v2.6.0 | |
+| `legacy` | `false` for new installs, `true` for upgrades | GA* | v2.6.0 | |
+| `multi-cluster-management` | `false` | GA* | v2.5.0 | |
+| `harvester` | `true` | Experimental | v2.6.1 | |
+| `rke2` | `true` | Experimental | v2.6.0 | |
 
-**Note:** The `yarn start` command won't include some important static site features. For example, switching between languages from the site's dropdown menu is not available. If you need these features, use `yarn build`.
-
-### Build Site
-
-```
-yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-### Launch With Docker
-
-You can also use [Docker](https://www.docker.com/) to launch the website.
-
-The below command can be used to install the dependencies and run the site inside a container:
-
-```
-docker run --rm -it -v $PWD:$PWD -w $PWD -p 3000:3000 node /bin/sh -c "yarn install && yarn start -h 0.0.0.0"
-```
-
-Subsequent executions will check for updated dependencies, if there are none, it will skip the updates and quickly start the server.
-
-License
-=======
-Copyright (c) 2014-2022 [Rancher Labs, Inc.](https://rancher.com)
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+\* Generally Available. This feature is included in Rancher and it is not experimental.
