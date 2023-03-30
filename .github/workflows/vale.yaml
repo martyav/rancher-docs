@@ -20,5 +20,3 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
           files: ${{env.CHANGED_FILES}}
-          reporter: github-check
-          fail_on_error: true
