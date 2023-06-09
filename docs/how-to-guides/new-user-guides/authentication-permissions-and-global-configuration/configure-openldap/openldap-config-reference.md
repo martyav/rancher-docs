@@ -2,11 +2,9 @@
 title: OpenLDAP Configuration Reference
 ---
 
-<head> 
-  <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/configure-openldap/openldap-config-reference">
-</head>
+This section is intended to be used as a reference when setting up an OpenLDAP authentication provider in Rancher.
 
-For further details on configuring OpenLDAP authentication, refer to the [official documentation.](https://www.openldap.org/doc/)
+For further details on configuring OpenLDAP, refer to the [official documentation.](https://www.openldap.org/doc/)
 
 > Before you proceed with the configuration, please familiarize yourself with the concepts of [External Authentication Configuration and Principal Users](../../../../pages-for-subheaders/authentication-config.md#external-authentication-configuration-and-principal-users).
 
