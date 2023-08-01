@@ -123,7 +123,7 @@ Authorized Cluster Endpoint can be used to directly access the Kubernetes API se
 
 :::note
 
-The authorized cluster endpoint only works on Rancher-launched Kubernetes clusters. It is not available for clusters in a hosted Kubernetes provider, such as Amazon's EKS. Prior to Rancher v2.6.3, it was only available for RKE, not RKE2 or K3s.
+The authorized cluster endpoint only works on Kubernetes clusters launched by Rancher, where Rancher used RKE, RKE2, or K3S to provision the cluster. It's not available for clusters in a hosted Kubernetes provider, such as Amazon's EKS. Prior to Rancher v2.6.3, it was only available for RKE, not RKE2 or K3s.
 
 :::
 
