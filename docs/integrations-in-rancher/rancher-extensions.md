@@ -18,17 +18,11 @@ Examples of built-in Rancher extensions are Fleet, Explorer, and Harvester. Exam
 
 2. If not already installed in **Apps**, you must enable the extension operator by clicking the **Enable** button.
 
-    - Click **OK** to add the Rancher extension repository if your installation is not air-gapped. Otherwise, uncheck the box to do so and click **OK**.
+    - Click **OK** to add the Rancher extension repository if your installation isn't air-gapped. Otherwise, uncheck the box and click **OK**.
 
     ![Rancher extension repository](/img/add-rancher-extension-repo.png)
 
 3. On the **Extensions** page, click on the **Available** tab to select which extensions you want to install.
-
-:::info
-
-In v2.7.0, the built-in extensions will not be displayed under the **Available** tab. Therefore, you will need to manually add the desired repos to install extensions. We will update the community once these extensions have been pulled out to be available for selection.
-
-:::
 <br/>
 
 4. If no extensions are showing as available, you may manually add repos as follows:
@@ -48,6 +42,32 @@ In v2.7.0, the built-in extensions will not be displayed under the **Available**
 6. Click the **Reload** page button that will appear after your extension successfully installs. Note that a logged-in user who has just installed an extension will not see a change to the UI **unless** they reload the page.
 
     ![Reload button](/img/reload-button.png)
+
+### Importing Extensions in an Air-Gapped Environment
+
+1. Find the address of the image you want to import as an extension, and record it. 
+
+1. [Create](../how-to-guides/new-user-guides/kubernetes-resources-setup/secrets.md) a registry secret within the `cattle-UI-plugin-system` namespace. Enter the domain of the image address in the **Registry Domain Name** field.
+
+1. Click **☰**, then select **Extensions** (under **Configuration**).
+
+1. On the top right, click **⋮ > Manage Extension Catalogs**.
+
+1. Select the **Import Extension Catalog** button.
+
+1. Enter the image address in the **Catalog Image Reference** field. 
+
+1. Select the secret you just created from the **Pull Secrets** drop-down menu.
+
+1. Click **Load**. The extension will now be **Pending**.
+
+1. Return to the **Extensions** page, and select the **Updates** tab.
+
+1. Find the extension you just imported. Select the **Update** button.
+
+1. Select the **Available** tab, and reload.
+
+1. Find the extension you just added, and click the **Install** button.
 
 ## Uninstalling Extensions
 
