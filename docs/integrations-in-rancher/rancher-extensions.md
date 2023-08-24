@@ -23,6 +23,12 @@ Examples of built-in Rancher extensions are Fleet, Explorer, and Harvester. Exam
     ![Rancher extension repository](/img/add-rancher-extension-repo.png)
 
 3. On the **Extensions** page, click on the **Available** tab to select which extensions you want to install.
+
+:::info
+
+In v2.7.0, the built-in extensions will not be displayed under the Available tab. Therefore, you will need to manually add the desired repos to install extensions. We will update the community once these extensions have been pulled out to be available for selection.
+
+:::
 <br/>
 
 4. If no extensions are showing as available, you may manually add repos as follows:
@@ -35,7 +41,7 @@ Examples of built-in Rancher extensions are Fleet, Explorer, and Harvester. Exam
 
     ![Manage repositories](/img/manage-repos.png)
 
-5. Under the **Available** tab, click **Install** on the desired extension and version as in the example below. Note that you can easily update your extension as the button to **Update** will appear on the extension if one is available.
+5. Under the **Available** tab, click **Install** on the desired extension and version as in the example below. Once you install the extension, an **Update** button will display if an update is available.
 
     ![Install Kubewarden](/img/install-kubewarden.png)
 
@@ -45,11 +51,11 @@ Examples of built-in Rancher extensions are Fleet, Explorer, and Harvester. Exam
 
 ### Importing Extensions in an Air-Gapped Environment
 
-1. Find the address of the image you want to import as an extension, and record it. 
+1. Find the address of the container image you want to import as an extension.
 
 1. [Create](../how-to-guides/new-user-guides/kubernetes-resources-setup/secrets.md) a registry secret within the `cattle-UI-plugin-system` namespace. Enter the domain of the image address in the **Registry Domain Name** field.
 
-1. Click **☰**, then select **Extensions** (under **Configuration**).
+1. Click **☰**, then select **Extensions**, under **Configuration**.
 
 1. On the top right, click **⋮ > Manage Extension Catalogs**.
 
@@ -61,11 +67,9 @@ Examples of built-in Rancher extensions are Fleet, Explorer, and Harvester. Exam
 
 1. Click **Load**. The extension will now be **Pending**.
 
-1. Return to the **Extensions** page, and select the **Updates** tab.
+1. Return to the **Extensions** page.
 
-1. Find the extension you just imported. Select the **Update** button.
-
-1. Select the **Available** tab, and reload.
+1. Select the **Available** tab, and click the **Reload** button to make sure that the list of extensions is up to date.
 
 1. Find the extension you just added, and click the **Install** button.
 
