@@ -8,15 +8,17 @@ title: Upgrading in an Air-Gapped Environment
 
 :::note
 
-These instructions assume you have already followed the instructions for a Kubernetes upgrade on [this page,](upgrades.md) including the prerequisites, up until step 3. Upgrade Rancher.
+Before you begin, follow the steps described on the [Upgrades](upgrades.md) page, including all prerequisites, up until [step 3 (upgrade Rancher)](upgrades.md#3-upgrade-rancher).
 
 :::
 
 ### Rancher Helm Upgrade Options
 
-To upgrade with Helm, apply the same options that you used when installing Rancher. Refer to the reference table below to replace each placeholder. Rancher needs to be configured to use the private registry in order to provision any Rancher launched Kubernetes clusters or Rancher tools.
+To upgrade Rancher with Helm, apply the same options as when you first installed Rancher. Use the reference table below and replace each placeholder with the appropiate value. 
 
-Based on the choice you made during installation, complete one of the procedures below.
+Rancher needs to be configured to use the private registry in order to provision any Rancher-launched Kubernetes clusters or Rancher tools.
+
+Based on the choices you made during installation, complete one of the procedures below.
 
 Placeholder | Description
 ------------|-------------
@@ -69,12 +71,10 @@ Log into Rancher to confirm that the upgrade succeeded.
 
 :::tip
 
-Having network issues following upgrade?
-
-See [Restoring Cluster Networking](/versioned_docs/version-2.0-2.4/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades/namespace-migration.md).
+If you have network issues following the upgrade, see [Restoring Cluster Networking](/versioned_docs/version-2.0-2.4/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades/namespace-migration.md).
 
 :::
 
 ## Known Upgrade Issues
 
-A list of known issues for each Rancher version can be found in the release notes on [GitHub](https://github.com/rancher/rancher/releases) and on the [Rancher forums.](https://forums.rancher.com/c/announcements/12)
+A list of known issues for each Rancher version can be found in the release notes on [GitHub](https://github.com/rancher/rancher/releases) and on the [Rancher forums](https://forums.rancher.com/c/announcements/12).

@@ -6,50 +6,75 @@ title: Vagrant Quick Start
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/getting-started/quick-start-guides/deploy-rancher-manager/vagrant"/>
 </head>
 
-The following steps quickly deploy a Rancher Server with a single node cluster attached.
+The following steps quickly deploy a Rancher server with a single-node downstream Kubernetes cluster attached.
 
 :::caution
 
-The intent of these guides is to quickly launch a sandbox that you can use to evaluate Rancher. These guides are not intended for production environments. For comprehensive setup instructions, see [Installation](../../../pages-for-subheaders/installation-and-upgrade.md).
+These instructions describe how to quickly launch a sandbox to evaluate Rancher. They aren't intended for production environments. For comprehensive Rancher setup instructions, see [Installation](../../../pages-for-subheaders/installation-and-upgrade.md).
 
 :::
 
 ## Prerequisites
 
-- [Vagrant](https://www.vagrantup.com): Vagrant is required as this is used to provision the machine based on the Vagrantfile.
-- [Virtualbox](https://www.virtualbox.org): The virtual machines that Vagrant provisions need to be provisioned to VirtualBox.
+- [Vagrant](https://www.vagrantup.com): Provisions a virtual machine (VM) based on a Vagrantfile.
+- [Virtualbox](https://www.virtualbox.org): Used by Vagrant to create the VM that hosts Rancher.
+- [Git](https://git-scm.com/) (optional): The quick start files you'll be using to create a Rancher instance are hosted in a Git repository. The easiest way to download them is via `git clone`. 
 - At least 4GB of free RAM.
 
-### Note
-- Vagrant will require plugins to create VirtualBox VMs. Install them with the following commands:
-
+:::note
+- Vagrant requires plugins to create VirtualBox VMs. To install the plugins, run:
+ 
   `vagrant plugin install vagrant-vboxmanage`
-
   `vagrant plugin install vagrant-vbguest`
+:::
 
 ## Getting Started
 
-1. Clone [Rancher Quickstart](https://github.com/rancher/quickstart) to a folder using `git clone https://github.com/rancher/quickstart`.
+1. Clone the [Rancher Quick Start](https://github.com/rancher/quickstart) repository: 
 
-2. Go into the folder containing the Vagrantfile by executing `cd quickstart/rancher/vagrant`.
+```bash
+git clone https://github.com/rancher/quickstart
+```
+
+2. Go to the folder containing the Vagrantfile: 
+
+```bash
+cd quickstart/rancher/vagrant
+```
 
 3. **Optional:** Edit `config.yaml` to:
 
-    - Change the number of nodes and the memory allocations, if required. (`node.count`, `node.cpus`, `node.memory`)
-    - Change the password of the `admin` user for logging into Rancher. (`admin_password`)
+  - Change the number of nodes and the memory allocations, if required: `node.count`, `node.cpus`, `node.memory`.
+  - Change the password of the `admin` accounted used for initial login: `admin_password`.
 
-4. To initiate the creation of the environment run, `vagrant up --provider=virtualbox`.
+4. Provision an environment in a VirtualBox VM for Rancher, using Vagrant. Provisioning might take several minutes:
+ 
+```bash
+vagrant up --provider=virtualbox`
+```
 
-5. Once provisioning finishes, go to `https://192.168.56.101` in the browser. The default user/password is `admin/adminPassword`.
+5. After the Rancher instance completes provisioning, go to https://192.168.56.101 in your web browser. The default user is `admin` and the default password is `adminPassword`.
 
-**Result:** Rancher Server and your Kubernetes cluster is installed on VirtualBox.
+:::note
+When you try to go to the IP address, you may see a warning that the connection is insecure.
+This is because the Rancher demo site doesn't include a web certificate.
+Ignore the warning for now and continue to the demo site.
+:::
+
+### Result
+
+The Rancher API server and downstream Kubernetes cluster are now installed on VirtualBox.
 
 ### What's Next?
 
-Use Rancher to create a deployment. For more information, see [Creating Deployments](../../../pages-for-subheaders/deploy-rancher-workloads.md).
+Use Rancher to [create a deployment](../../../pages-for-subheaders/deploy-rancher-workloads.md).
 
 ## Destroying the Environment
 
-1. From the `quickstart/rancher/vagrant` folder execute `vagrant destroy -f`.
+1. From the `quickstart/rancher/vagrant` folder, run:
 
-2. Wait for the confirmation that all resources have been destroyed.
+```bash
+vagrant destroy -f
+```
+
+2. Wait for the confirmation that all resources are destroyed.

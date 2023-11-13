@@ -9,9 +9,9 @@ description: Read this step by step Rancher Hetzner Cloud guide to quickly deplo
 
 The following steps will quickly deploy a Rancher server on Hetzner Cloud in a single-node K3s Kubernetes cluster, with a single-node downstream Kubernetes cluster attached.
 
-:::caution
+:::note
 
-The intent of these guides is to quickly launch a sandbox that you can use to evaluate Rancher. These guides are not intended for production environments. For comprehensive setup instructions, see [Installation](../../../pages-for-subheaders/installation-and-upgrade.md).
+These instructions describe how to quickly launch a sandbox to evaluate Rancher. They aren't intended for production environments. For comprehensive Rancher setup instructions, see [Installation](../../../pages-for-subheaders/installation-and-upgrade.md).
 
 :::
 
@@ -23,34 +23,48 @@ Deploying to Hetzner Cloud will incur charges.
 
 :::
 
-- [Hetzner Cloud Account](https://www.hetzner.com): You will require an account on Hetzner as this is where the server and cluster will run.
-- [Hetzner API Access Key](https://docs.hetzner.cloud/#getting-started): Use these instructions to create a Hetzner Cloud API Key if you don't have one.
-- [Terraform](https://www.terraform.io/downloads.html): Used to provision the server and cluster to Hetzner.
-
+- [Hetzner Cloud Account](https://www.hetzner.com): You must have an account on Hetzner as this is where Rancher will run.
+- Hetzner API Access Key: Use these [instructions](https://docs.hetzner.cloud/#getting-started) to create a Hetzner Cloud API Key if you don't have one.
+- [Terraform](https://www.terraform.io/downloads.html): Provisions the Rancher server and downstream cluster to Hetzner.
+- [Git](https://git-scm.com/) (optional): The quick start files you'll be using to create a Rancher instance are hosted in a Git repository. The easiest way to download them is via `git clone`.
 
 ## Getting Started
 
-1. Clone [Rancher Quickstart](https://github.com/rancher/quickstart) to a folder using `git clone https://github.com/rancher/quickstart`.
+1. Clone the [Rancher Quick Start](https://github.com/rancher/quickstart) repository: 
 
-2. Go into the Hetzner folder containing the Terraform files by executing `cd quickstart/rancher/hcloud`.
+```bash
+git clone https://github.com/rancher/quickstart
+```
+
+2. Go into the Hetzner folder containing the Terraform files:
+
+```bash
+cd quickstart/rancher/hcloud`.
+```
 
 3. Rename the `terraform.tfvars.example` file to `terraform.tfvars`.
 
 4. Edit `terraform.tfvars` and customize the following variables:
-    - `hcloud_token` - Hetzner API access key
-    - `rancher_server_admin_password` - Admin password for created Rancher server (minimum 12 characters)
+    - `hcloud_token` - Hetzner API access key.
+    - `rancher_server_admin_password` - Admin password for created Rancher server (minimum 12 characters).
 
 5. **Optional:** Modify optional variables within `terraform.tfvars`.
 See the [Quickstart Readme](https://github.com/rancher/quickstart) and the [Hetzner Quickstart Readme](https://github.com/rancher/quickstart/tree/master/rancher/hcloud) for more information.
 Suggestions include:
 
-   - `prefix` - Prefix for all created resources
-   - `instance_type` - Instance type, minimum required is `cx21`
-   - `hcloud_location` - Hetzner Cloud location, choose the closest instead of the default (`fsn1`)
+   - `prefix` - Prefix for all created resources.
+   - `instance_type` - Instance type, minimum required is `cx21`.
+   - `hcloud_location` - Hetzner Cloud location, choose the closest instead of the default (`fsn1`).
 
 6. Run `terraform init`.
 
-7. To initiate the creation of the environment, run `terraform apply --auto-approve`. Then wait for output similar to the following:
+7. Setup an environment for Rancher, using Terraform:
+
+```bash
+terraform apply --auto-approve`
+```
+
+Then wait for output similar to the following:
 
     ```
     Apply complete! Resources: 15 added, 0 changed, 0 destroyed.
@@ -62,8 +76,9 @@ Suggestions include:
     workload_node_ip = yy.yy.yy.yy
     ```
 
-8. Paste the `rancher_server_url` from the output above into the browser. Log in when prompted (default username is `admin`, use the password set in `rancher_server_admin_password`).
-9. ssh to the Rancher Server using the `id_rsa` key generated in `quickstart/rancher/hcloud`.
+8. Paste the `rancher_server_url` from the output above into the browser. Log in when prompted. The default username is `admin`. Use the password set in `rancher_server_admin_password`.
+
+9. To access the Rancher server, SSH into it using the `id_rsa` key generated in `quickstart/rancher/hcloud`.
 
 #### Result
 

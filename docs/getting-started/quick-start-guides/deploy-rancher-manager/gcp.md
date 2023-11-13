@@ -7,11 +7,11 @@ description: Read this step by step Rancher GCP guide to quickly deploy a Ranche
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/getting-started/quick-start-guides/deploy-rancher-manager/gcp"/>
 </head>
 
-The following steps will quickly deploy a Rancher server on GCP in a single-node K3s Kubernetes cluster, with a single-node downstream Kubernetes cluster attached.
+The following steps will quickly deploy a Rancher server on Google Cloud Platform (GCP) in a single-node K3s Kubernetes cluster, with a single-node downstream Kubernetes cluster attached.
 
-:::caution
+:::note
 
-The intent of these guides is to quickly launch a sandbox that you can use to evaluate Rancher. These guides are not intended for production environments. For comprehensive setup instructions, see [Installation](../../../pages-for-subheaders/installation-and-upgrade.md).
+These instructions describe how to quickly launch a sandbox to evaluate Rancher. They aren't intended for production environments. For comprehensive Rancher setup instructions, see [Installation](../../../pages-for-subheaders/installation-and-upgrade.md).
 
 :::
 
@@ -19,15 +19,15 @@ The intent of these guides is to quickly launch a sandbox that you can use to ev
 
 :::caution
 
-Deploying to Google GCP will incur charges.
+Deploying to GCP will incur charges.
 
 :::
 
 - [Google GCP Account](https://console.cloud.google.com/): A Google GCP Account is required to create resources for deploying Rancher and Kubernetes.
 - [Google GCP Project](https://cloud.google.com/appengine/docs/standard/nodejs/building-app/creating-project): Use this link to follow a tutorial to create a GCP Project if you don't have one yet.
 - [Google GCP Service Account](https://cloud.google.com/iam/docs/creating-managing-service-account-keys): Use this link and follow instructions to create a GCP service account and token file.
-- [Terraform](https://www.terraform.io/downloads.html): Used to provision the server and cluster in Google GCP.
-
+- [Terraform](https://www.terraform.io/downloads.html): Provision the Rancher server and downstream cluster in Google GCP.
+- [Git](https://git-scm.com/) (optional): The quick start files you'll be using to create a Rancher instance are hosted in a Git repository. The easiest way to download them is via `git clone`.
 
 ## Getting Started
 
