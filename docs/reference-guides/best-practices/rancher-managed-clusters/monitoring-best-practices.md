@@ -6,71 +6,73 @@ title: Monitoring Best Practices
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/reference-guides/best-practices/rancher-managed-clusters/monitoring-best-practices"/>
 </head>
 
-Configuring sensible monitoring and alerting rules is vital for running any production workloads securely and reliably. This is not different when using Kubernetes and Rancher. Fortunately the integrated monitoring and alerting functionality makes this whole process a lot easier.
+Configuring sensible monitoring and alerting rules is vital for running any production workloads. Monitoring and alerts aide you in the goals of security and reliability. Fortunately, Rancher's integrated monitoring and alerting makes adding monitoring and alerts easy.
 
-The [Rancher monitoring documentation](../../../pages-for-subheaders/monitoring-and-alerting.md) describes how you can set up a complete Prometheus and Grafana stack. Out of the box this will scrape monitoring data from all system and Kubernetes components in your cluster and provide sensible dashboards and alerts for them to get started. But for a reliable setup, you also need to monitor your own workloads and adapt Prometheus and Grafana to your own specific use cases and cluster sizes. This document aims to give you best practices for this.
+The [Rancher monitoring documentation](../../../pages-for-subheaders/monitoring-and-alerting.md) describes how to set up a complete Prometheus and Grafana stack. This will scrape monitoring data from all system and Kubernetes components in your cluster, and provide sensible dashboards and alerts. However, you should also adapt Prometheus and Grafana to your specific needs.
 
 ## What to Monitor
 
-Kubernetes itself, as well as applications running inside of it, form a distributed system where different components interact with each other. For the whole system and each individual component, you have to ensure performance, availability, reliability and scalability. A good resource with more details and information is Google's free [Site Reliability Engineering Book](https://sre.google/sre-book/table-of-contents/), especially the chapter about [Monitoring distributed systems](https://sre.google/sre-book/monitoring-distributed-systems/).
+Kubernetes and the applications running inside of it form a distributed system of components. Google's free [Site Reliability Engineering book](https://sre.google/sre-book/table-of-contents/) is a great resource on how to ensure the performance, availability, reliability and scalability of both the system as a whole, and each distinct component. The chapter about [monitoring distributed systems](https://sre.google/sre-book/monitoring-distributed-systems/) is especially pertient.
 
 ## Configuring Prometheus Resource Usage
 
-When installing the integrated monitoring stack, Rancher allows to configure several settings that are dependent on the size of your cluster and the workloads running in it. This chapter covers these in more detail.
+When you install the integrated monitoring stack, Rancher configures several settings that are dependent on the size of your cluster and the workloads running within it.
 
 ### Storage and Data Retention
 
-The amount of storage needed for Prometheus directly correlates to the amount of time series and labels that you store and the data retention you have configured. It is important to note that Prometheus is not meant to be used as a long-term metrics storage. Data retention time is usually only a couple of days and not weeks or months. The reason for this is that Prometheus does not perform any aggregation on its stored metrics. This is great because aggregation can dilute data, but it also means that the needed storage grows linearly over time without retention.
+There is a direct correlation between Prometheus storage needs, and both the number of time series and labels stored, and the data retention time set. Data retention time should only be a couple of days, not weeks or months. This is because Prometheus doesn't perform any aggregation on its stored metrics. While this helps prevent data from becoming diluted, storage needs will grow linearly without retention.
 
-One way to calculate the necessary storage is to look at the average size of a storage chunk in Prometheus with this query
+#### Calculate How Much Storage Prometheus Needs 
+
+The following formulas provide a rough idea of your Prometheus storage needs.
+
+1. Find the average storage chunk size in Prometheus:
 
 ```
 rate(prometheus_tsdb_compaction_chunk_size_bytes_sum[1h]) / rate(prometheus_tsdb_compaction_chunk_samples_sum[1h])
 ```
 
-Next, find out your data ingestion rate per second:
+2. Find your data ingestion rate per second:
 
 ```
 rate(prometheus_tsdb_head_samples_appended_total[1h])
 ```
 
-and then multiply this with the retention time, adding a few percentage points as buffer:
+3. Multiply the average chunk size with the data ingestion rate and the retention time, including a few extra percent of bytes as a buffer:
 
-```
+``` 
 average chunk size in bytes * ingestion rate per second * retention time in seconds * 1.1 = necessary storage in bytes
 ```
 
-You can find more information about how to calculate the necessary storage in this [blog post](https://www.robustperception.io/how-much-disk-space-do-prometheus-blocks-use).
-
-You can read more about the Prometheus storage concept in the [Prometheus documentation](https://prometheus.io/docs/prometheus/latest/storage).
+You can find more information about how to calculate Prometheus storage in this [blog post](https://www.robustperception.io/how-much-disk-space-do-prometheus-blocks-use). Learn more about how Prometheus storage works in the [official documentation](https://prometheus.io/docs/prometheus/latest/storage).
 
 ### CPU and Memory Requests and Limits
 
-In larger Kubernetes clusters Prometheus can consume quite a bit of memory. The amount of memory Prometheus needs directly correlates to the amount of time series and amount of labels it stores and the scrape interval in which these are filled.
+In larger Kubernetes clusters, Prometheus can consume quite a bit of memory. There is a direct correlation between memory consumption, and both the number of time series and labels stored, and the time interval set for data scraping.
 
-You can find more information about how to calculate the necessary memory in this [blog post](https://www.robustperception.io/how-much-ram-does-prometheus-2-x-need-for-cardinality-and-ingestion).
+There is also a direct correlation between the number of CPUs Prometheus needs, and how many queries you perform.
 
-The amount of necessary CPUs correlate with the amount of queries you are performing.
+You can find more information about how to calculate how much memory Prometheus needs in the blog post, [How much RAM does Prometheus 2.x need for cardinality and ingestion?](https://www.robustperception.io/how-much-ram-does-prometheus-2-x-need-for-cardinality-and-ingestion).
 
 ### Federation and Long-term Storage
 
-Prometheus is not meant to store metrics for a long amount of time, but should only be used for short term storage.
+Prometheus is intended for short-term storage.
 
-In order to store some, or all metrics for a long time, you can leverage Prometheus' [remote read/write](https://prometheus.io/docs/prometheus/latest/storage/#remote-storage-integrations) capabilities to connect it to storage systems like [Thanos](https://thanos.io/), [InfluxDB](https://www.influxdata.com/), [M3DB](https://www.m3db.io/), or others. You can find an example setup in this [blog post](https://rancher.com/blog/2020/prometheus-metric-federation).
+To store metrics for the long-term, use Prometheus' [remote read/write](https://prometheus.io/docs/prometheus/latest/storage/#remote-storage-integrations) capabilities to connect to storage systems such as [Thanos](https://thanos.io/), [InfluxDB](https://www.influxdata.com/), [M3DB](https://www.m3db.io/), or others. You can find an example setup in this [blog post](https://rancher.com/blog/2020/prometheus-metric-federation).
 
 ## Scraping Custom Workloads
 
-While the integrated Rancher Monitoring already scrapes system metrics from a cluster's nodes and system components, the custom workloads that you deploy on Kubernetes should also be scraped for data. For that you can configure Prometheus to do an HTTP request to an endpoint of your applications in a certain interval. These endpoints should then return their metrics in a Prometheus format.
+Rancher Monitoring scrapes system metrics from a cluster's nodes and system components. You should also scrape data from the custom workloads that you deploy on Kubernetes. To do so, configure Prometheus to do an HTTP request to an endpoint of your applications at a certain interval. These endpoints should return their metrics in a Prometheus format.
 
-In general, you want to scrape data from all the workloads running in your cluster so that you can use them for alerts or debugging issues. Often, you recognize that you need some data only when you actually need the metrics during an incident. It is good, if it is already scraped and stored. Since Prometheus is only meant to be a short-term metrics storage, scraping and keeping lots of data is usually not that expensive. If you are using a long-term storage solution with Prometheus, you can then still decide which data you are actually persisting and keeping there.
+Often, you will realize that you need data for alerts or debugging only when an incident occurs. It's better if that data is already scraped and stored. Since Prometheus is only intended for short-term metrics storage, scraping and keeping lots of data is usually not that expensive. Therefore, you should scrape data from all the workloads running in your cluster. If you are using a long-term storage solution with Prometheus, you can decide which data to keep.
 
 ### About Prometheus Exporters
 
-Many 3rd party workloads, such as databases, queues, and web-servers, already support exposing metrics in a Prometheus format, or offer exporters that translate between the tool's metrics and a format that Prometheus understands. You can usually add these exporters as additional sidecar containers to the workload's Pods. Many Helm charts already include options to deploy the correct exporter. You can find a curated list of exports by SysDig on [promcat.io](https://promcat.io/) and on [ExporterHub](https://exporterhub.io/).
+Many third party workloads, such as databases, queues, and web-servers, already support exposing metrics in a Prometheus format, or offer exporters that translate between the tool's metrics and a format that Prometheus understands. You can usually add these exporters as additional sidecar containers to the workload's Pods. Many Helm charts include options to deploy the correct exporter. You can find a curated list of exports by SysDig on [promcat.io](https://promcat.io/) and on [ExporterHub](https://exporterhub.io/).
 
 ### Prometheus support in Programming Languages and Frameworks
 
-To get your own custom application metrics into Prometheus, you have to collect and expose these metrics directly from your application's code. Fortunately, there are already libraries and integrations available to help with this for most popular programming languages and frameworks. One example for this is the Prometheus support in the [Spring Framework](https://docs.spring.io/spring-metrics/docs/current/public/prometheus).
+To get your own custom application metrics into Prometheus, you must collect and expose these metrics directly from your application's code. There are libraries and integrations available to help with this for most popular programming languages and frameworks. For example, the Spring Framework [supports Prometheus](https://docs.spring.io/spring-metrics/docs/current/public/prometheus).
 
 ### ServiceMonitors and PodMonitors
 
@@ -78,38 +80,36 @@ Once all of your workloads expose metrics in a Prometheus format, you must confi
 
 ### Prometheus Push Gateway
 
-There are some workloads that are traditionally hard to scrape by Prometheus. Examples for these are short lived workloads like Jobs and CronJobs, or applications that do not allow sharing data between individual handled incoming requests, like PHP applications.
+Prometheus has difficulty scraping certain kinds of workloads. Some examples include short-lived workloads such as Jobs and CronJobs, or applications that don't allow sharing data between individually handled incoming requests, such as PHP applications.
 
-To still get metrics for these use cases, you can set up [prometheus-pushgateways](https://github.com/prometheus/pushgateway). The CronJob or PHP application would push metric updates to the pushgateway. The pushgateway aggregates and exposes them through an HTTP endpoint, which then can be scraped by Prometheus.
+To get metrics from these kinds of workloads, set up [prometheus-pushgateways](https://github.com/prometheus/pushgateway). The CronJob or PHP application pushes metric updates to the pushgateway, which aggregates and exposes them through an HTTP endpoint that Prometheus can scrape.
 
 ### Prometheus Blackbox Monitor
 
-Sometimes it is useful to monitor workloads from the outside. For this, you can use the [Prometheus blackbox-exporter](https://github.com/prometheus/blackbox_exporter) which allows probing any kind of endpoint over HTTP, HTTPS, DNS, TCP and ICMP.
+Sometimes it's useful to monitor workloads from the outside. The [Prometheus blackbox-exporter](https://github.com/prometheus/blackbox_exporter) allows you to probe any kind of endpoint over HTTP, HTTPS, DNS, TCP and ICMP.
 
 ## Monitoring in a (Micro)Service Architecture
 
-If you have a (micro)service architecture where multiple individual workloads within your cluster are communicating with each other, it is really important to have detailed metrics and traces about this traffic to understand how all these workloads are communicating with each other and where a problem or bottleneck may be.
+If you have a (micro)service architecture with frequent communication between workloads in the same cluster, you need detailed metrics and traces about this network traffic. This information will help you locate problems or bottlenecks.
 
-Of course you can monitor all this internal traffic in all your workloads and expose these metrics to Prometheus. But this can quickly become quite work intensive. Service Meshes like Istio, which can be installed with [a click](../../../pages-for-subheaders/istio.md) in Rancher, can do this automatically and provide rich telemetry about the traffic between all services.
+It's possible to monitor all the internal traffic in all your workloads and expose these metrics to Prometheus. However, this can quickly become burdensome. Service Meshes such as Istio, which can be installed with [a click](../../../pages-for-subheaders/istio.md) in Rancher, can do this internal monitoring automatically, and provide rich telemetry about the traffic between all services.
 
 ## Real User Monitoring
 
-Monitoring the availability and performance of all your internal workloads is vitally important to run stable, reliable and fast applications. But these metrics only show you parts of the picture. To get a complete view it is also necessary to know how your end users are actually perceiving it. For this you can look into various [Real user monitoring solutions](https://en.wikipedia.org/wiki/Real_user_monitoring).
+To run stable, reliable and fast applications, it's vitally important to monitor the availability and performance of all of your internal workloads. However, the metrics you get from your workloads only provide a part of the complete picture. Use [Real user monitoring solutions](https://en.wikipedia.org/wiki/Real_user_monitoring) to understand how your end users see your applications.
 
 ## Security Monitoring
 
-In addition to monitoring workloads to detect performance, availability or scalability problems, the cluster and the workloads running into it should also be monitored for potential security problems. A good starting point is to frequently run and alert on [CIS Scans](../../../pages-for-subheaders/cis-scan-guides.md) which check if the cluster is configured according to security best practices.
+The cluster and the workloads running into it should be monitored for potential security problems. A good starting point is to frequently run and alert on [CIS Scans](../../../pages-for-subheaders/cis-scan-guides.md), which check if the cluster follows security best practices.
 
-For the workloads, you can have a look at Kubernetes and Container security solutions like [NeuVector](https://www.suse.com/products/neuvector/), [Falco](https://falco.org/), [Aqua Kubernetes Security](https://www.aquasec.com/solutions/kubernetes-container-security/), [SysDig](https://sysdig.com/).
+For workloads, consider Kubernetes and container security solutions such as [NeuVector](https://www.suse.com/products/neuvector/), [Falco](https://falco.org/), [Aqua Kubernetes Security](https://www.aquasec.com/solutions/kubernetes-container-security/), or [SysDig](https://sysdig.com/).
 
 ## Setting up Alerts
 
-Getting all the metrics into a monitoring systems and visualizing them in dashboards is great, but you also want to be pro-actively alerted if something goes wrong.
+Rancher monitoring provides a sensible set of alerts that make sense in any Kubernetes cluster. You should also add alerts to cover your specific workloads and use cases.
 
-The integrated Rancher monitoring already configures a sensible set of alerts that make sense in any Kubernetes cluster. You should extend these to cover your specific workloads and use cases.
-
-When setting up alerts, configure them for all the workloads that are critical to the availability of your applications. But also make sure that they are not too noisy. Ideally every alert you are receiving should be because of a problem that needs your attention and needs to be fixed. If you have alerts that are firing all the time but are not that critical, there is a danger that you start ignoring your alerts all together and then miss the real important ones. Less may be more here. Start to focus on the real important metrics first, for example alert if your application is offline. Fix all the problems that start to pop up and then start to create more detailed alerts.
+When you set up alerts, configure them for all your critical workloads. Also, make sure that the alerts aren't too noisy. Every alert you receive should be in response to a problem that needs to be fixed. If you have alerts that are constantly firing but are not that critical, there is a danger that you will start to ignore alerts altogether and then miss the truly important ones. Less may be more here. Focus on the really important metrics first, such as if your application goes offline. Fix all the problems that start to pop up and then start to create more detailed alerts.
 
 If an alert starts firing, but there is nothing you can do about it at the moment, it's also fine to silence the alert for a certain amount of time, so that you can look at it later.
 
-You can find more information on how to set up alerts and notification channels in the [Rancher Documentation](../../../pages-for-subheaders/monitoring-and-alerting.md).
+You can find more information on how to set up alerts and notification channels in the Rancher Documentation on [monitoring and alerting](../../../pages-for-subheaders/monitoring-and-alerting.md).
