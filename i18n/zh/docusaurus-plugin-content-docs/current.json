@@ -215,8 +215,7 @@
     "message": "高级配置",
     "description": "The label for category Advanced Configuration in sidebar tutorialSidebar"
   },
-  "sidebar.tutorialSidebar.category.Istio Setup Guides"
-: {
+  "sidebar.tutorialSidebar.category.Istio Setup Guide test": {
     "message": "Istio 设置指南",
     "description": "The label for category Istio Setup Guide in sidebar tutorialSidebar"
   },
