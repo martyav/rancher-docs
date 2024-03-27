@@ -227,8 +227,10 @@
     "message": "Advanced Configuration",
     "description": "The label for category Advanced Configuration in sidebar tutorialSidebar"
   },
-  "sidebar.tutorialSidebar.category.Istio Setup Guide": {
-    "message": "Istio Setup Guide",
+  "sidebar.tutorialSidebar.category.Istio Setup Guides"
+: {
+    "message": "Istio Setup Guides"
+,
     "description": "The label for category Istio Setup Guide in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.CIS Scan Guides": {
